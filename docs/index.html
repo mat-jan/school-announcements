@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SchoolPulse – dokumentacja projektu</title>
+<meta name="description" content="Dokumentacja SchoolPulse: prostej aplikacji z ogłoszeniami szkolnymi, panelem administratora i instalacją na telefonie.">
+<link rel="icon" href="img/icon.png">
+<style>
+:root { --bg:#fbfbf9; --fg:#1d2433; --muted:#5d6577; --line:#dcdfe6; --accent:#3f3ac0; --code:#f0f1f5; --th:#eceef6; }
+@media (prefers-color-scheme: dark) { :root { --bg:#14171f; --fg:#e6e8ef; --muted:#a2a8b8; --line:#2b3040; --accent:#9b98ff; --code:#1d212c; --th:#1f2433; } }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color:var(--accent); }
+.top { position:sticky; top:0; z-index:5; background:var(--bg); border-bottom:1px solid var(--line); }
+.top div { max-width:68rem; margin:0 auto; padding:.7rem 1.25rem; display:flex; gap:1.25rem; align-items:baseline; flex-wrap:wrap; }
+.top strong { font-size:1.05rem; letter-spacing:-.01em; }
+.top nav { margin-left:auto; display:flex; gap:1.1rem; font-size:.95rem; }
+.top a { text-decoration:none; } .top a:hover { text-decoration:underline; }
+.layout { max-width:68rem; margin:0 auto; padding:2.5rem 1.25rem 4rem; display:grid; grid-template-columns: 13rem minmax(0,1fr); gap:3rem; }
+aside { position:sticky; top:5rem; align-self:start; font-size:.92rem; }
+aside p { margin:0 0 .5rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-size:.75rem; }
+aside ol { list-style:none; margin:0; padding:0; display:grid; gap:.35rem; }
+aside a { color:var(--muted); text-decoration:none; } aside a:hover { color:var(--accent); }
+main { min-width:0; max-width:46rem; }
+h1 { font-size:2.4rem; line-height:1.15; letter-spacing:-.02em; margin:0 0 1rem; }
+h2 { font-size:1.55rem; letter-spacing:-.01em; margin:3rem 0 .75rem; padding-top:1.25rem; border-top:1px solid var(--line); }
+h3 { font-size:1.15rem; margin:2rem 0 .5rem; }
+p, li { max-width:42rem; } li { margin:.25rem 0; }
+img { max-width:100%; height:auto; border:1px solid var(--line); border-radius:6px; background:#fff; vertical-align:top; }
+p[align=center] { text-align:center; max-width:none; margin:1.5rem 0 .5rem; }
+p > em:only-child { display:block; color:var(--muted); font-size:.9rem; text-align:center; max-width:none; margin-bottom:1.5rem; }
+table { border-collapse:collapse; width:100%; font-size:.94rem; margin:1.25rem 0; display:block; overflow-x:auto; }
+th, td { text-align:left; vertical-align:top; padding:.55rem .75rem; border:1px solid var(--line); }
+th { background:var(--th); font-weight:600; }
+code { background:var(--code); padding:.1rem .35rem; border-radius:4px; font:.88em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:6px; padding:1rem 1.1rem; overflow-x:auto; font-size:.85rem; line-height:1.5; }
+pre code { background:none; padding:0; }
+.get { display:flex; gap:.75rem; flex-wrap:wrap; margin:1.5rem 0 0; }
+.get a { padding:.55rem 1rem; border:1px solid var(--accent); border-radius:6px; text-decoration:none; font-size:.95rem; }
+.get a:first-child { background:var(--accent); color:var(--bg); }
+footer { border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+footer div { max-width:68rem; margin:0 auto; padding:1.25rem; }
+@media (max-width: 62rem) { .layout { grid-template-columns: minmax(0,1fr); gap:0; } aside { display:none; } h1 { font-size:2rem; } body { font-size:16.5px; } }
+@media print { .top, aside, .get { display:none; } .layout { display:block; padding:0; } img { break-inside:avoid; } }
+</style>
+</head>
+<body>
+<header class="top"><div>
+  <strong>SchoolPulse</strong>
+  <nav aria-label="Odnośniki"><a href="https://github.com/mat-jan/school-announcements">Kod na GitHubie</a><a href="dokumentacja.docx">Pobierz (Word)</a></nav>
+</div></header>
+<div class="layout">
+<aside aria-label="Spis treści"><p>Spis treści</p><ol><li><a href="#1-do-czego-to-suzy">1. Do czego to służy</a></li><li><a href="#2-jak-to-wyglada">2. Jak to wygląda</a></li><li><a href="#3-jak-z-tego-korzystac">3. Jak z tego korzystać</a></li><li><a href="#4-jak-to-jest-zbudowane">4. Jak to jest zbudowane</a></li><li><a href="#5-bezpieczenstwo">5. Bezpieczeństwo</a></li><li><a href="#6-srodowiska-i-wdrozenie">6. Środowiska i wdrożenie</a></li><li><a href="#7-testy">7. Testy</a></li><li><a href="#8-ograniczenia-i-dalszy-rozwoj">8. Ograniczenia i dalszy rozwój</a></li></ol></aside>
+<main id="tresc">
+<h1>SchoolPulse – dokumentacja projektu</h1>
+<p>SchoolPulse to prosta aplikacja internetowa z ogłoszeniami szkolnymi. Uczniowie i rodzice otwierają jedną stronę zamiast przeszukiwać grupy na komunikatorach. Administrator dodaje ogłoszenia w osobnym panelu. Aplikację można zainstalować na telefonie jak zwykłą aplikację, bez sklepu.</p>
+<p>Repozytorium: <a href="https://github.com/mat-jan/school-announcements">https://github.com/mat-jan/school-announcements</a></p>
+<h2 id="1-do-czego-to-suzy">1. Do czego to służy</h2>
+<p>Informacje szkolne rozchodzą się dziś po wielu grupach i wiadomościach. Ważne ogłoszenie ginie między zdjęciami i odpowiedziami, a po tygodniu nikt nie wie, czy termin jest jeszcze aktualny. SchoolPulse robi jedną rzecz: pokazuje aktualne ogłoszenia w jednym miejscu, w kolejności, która ma sens.</p>
+<p>Każde ogłoszenie ma tytuł i treść oraz cztery cechy, które wystarczają na co dzień:</p>
+<ul>
+<li><strong>klasę</strong> – dotyczy jednej klasy albo całej szkoły,</li>
+<li><strong>przypięcie</strong> – przypięte ogłoszenia są zawsze na górze,</li>
+<li><strong>termin</strong> – data i godzina, np. oddania projektu lub spotkania; z terminu można jednym kliknięciem zrobić wpis w kalendarzu telefonu,</li>
+<li><strong>datę wygaśnięcia</strong> – po niej ogłoszenie samo znika z listy, więc nikt nie musi go sprzątać.</li>
+</ul>
+<p>Aplikacja nie ma kont uczniów, komentarzy ani czatu. To celowe: ma być podobna do tablicy ogłoszeń na korytarzu, tylko aktualna i zawsze pod ręką.</p>
+<h2 id="2-jak-to-wyglada">2. Jak to wygląda</h2>
+<h3 id="21-strona-dla-uczniow-i-rodzicow">2.1. Strona dla uczniów i rodziców</h3>
+<p>Pierwszy ekran to lista ogłoszeń. Nie trzeba się logować. Na górze są ogłoszenia przypięte, niżej najnowsze. Przyciski z nazwami klas zawężają listę do wybranej klasy (razem z ogłoszeniami dla całej szkoły).</p>
+<p><img loading="lazy" alt="Lista ogłoszeń na komputerze" src="img/feed-desktop.png" /></p>
+<p><em>Lista ogłoszeń. Przypięta wywiadówka jest na górze, każde ogłoszenie pokazuje klasę, termin i datę wygaśnięcia.</em></p>
+<p align="center">
+<img loading="lazy" src="img/feed-mobile.png" alt="Lista ogłoszeń na telefonie" width="260">
+&nbsp;&nbsp;
+<img loading="lazy" src="img/feed-klasa-mobile.png" alt="Lista po wybraniu klasy" width="260">
+</p>
+
+<p><em>Ta sama strona na telefonie, po lewej wszystkie ogłoszenia, po prawej po wybraniu klasy 7A.</em></p>
+<p>Przy ogłoszeniu z terminem jest przycisk <strong>Dodaj do kalendarza</strong>. Pobiera on plik kalendarza (.ics), który otwiera się w Kalendarzu na iPhonie, w Kalendarzu Google i w Outlooku. Wpis trwa pół godziny i zawiera przypomnienie dzień wcześniej.</p>
+<p align="center">
+<img loading="lazy" src="img/karta-termin.png" alt="Ogłoszenie z terminem i przyciskiem dodania do kalendarza" width="560">
+</p>
+
+<h3 id="22-panel-administratora">2.2. Panel administratora</h3>
+<p>Panel jest osobną częścią aplikacji, dostępną pod adresem <code>/admin</code>. Nie ma do niego odnośnika na stronie publicznej, a wejście wymaga zalogowania.</p>
+<p><img loading="lazy" alt="Logowanie do panelu" src="img/admin-logowanie.png" /></p>
+<p>Po zalogowaniu administrator widzi wszystkie ogłoszenia, także wygasłe. Przy każdym są trzy przyciski: <strong>Edytuj</strong>, <strong>Przypnij</strong> (albo <strong>Odepnij</strong>) i <strong>Usuń</strong>. Usunięcie wymaga potwierdzenia.</p>
+<p><img loading="lazy" alt="Panel administratora z listą ogłoszeń" src="img/admin-panel.png" /></p>
+<p>Nowe ogłoszenie dodaje się w jednym formularzu. Termin i datę wygaśnięcia można zostawić puste.</p>
+<p><img loading="lazy" alt="Formularz dodawania ogłoszenia" src="img/admin-formularz.png" /></p>
+<h3 id="23-instalacja-na-telefonie">2.3. Instalacja na telefonie</h3>
+<p>Strona <code>/instalacja</code> jest przeznaczona do kodu QR, który można wydrukować i powiesić w szkole. Po zeskanowaniu kodu telefon otwiera stronę dopasowaną do systemu:</p>
+<ul>
+<li>na <strong>Androidzie</strong> (Chrome) jest przycisk <strong>Zainstaluj aplikację</strong>, który otwiera natywne okno instalacji,</li>
+<li>na <strong>iPhonie</strong> i iPadzie (Safari) strona pokazuje cztery kroki: Udostępnij, Dodaj do ekranu początkowego, Dodaj. Apple nie pozwala uruchomić instalacji z poziomu strony, więc instrukcja jest konieczna,</li>
+<li>na komputerze strona wyjaśnia, że aplikację instaluje się na telefonie, i pokazuje sam kod QR.</li>
+</ul>
+<p>Po instalacji aplikacja otwiera się z ikony, bez paska przeglądarki.</p>
+<p align="center">
+<img loading="lazy" src="img/instalacja-android.png" alt="Instalacja na Androidzie" width="260">
+&nbsp;&nbsp;
+<img loading="lazy" src="img/instalacja-iphone.png" alt="Instalacja na iPhonie" width="260">
+</p>
+
+<p><em>Po lewej Android z przyciskiem instalacji, po prawej iPhone z instrukcją krok po kroku. Adres w kodzie QR na zrzutach jest przykładowy.</em></p>
+<h2 id="3-jak-z-tego-korzystac">3. Jak z tego korzystać</h2>
+<h3 id="odwiedzajacy">Odwiedzający</h3>
+<ol>
+<li>Otwórz stronę główną. Ogłoszenia są od razu widoczne.</li>
+<li>Wybierz klasę przyciskiem nad listą, jeśli interesują Cię tylko jej ogłoszenia.</li>
+<li>Przy ogłoszeniu z terminem naciśnij <strong>Dodaj do kalendarza</strong> i otwórz pobrany plik.</li>
+<li>Na dole strony jest odnośnik do instalacji aplikacji na telefonie.</li>
+</ol>
+<p>Lista pokazuje 20 ogłoszeń na stronę, starsze są pod przyciskiem <strong>Starsze</strong>. Ogłoszenia po dacie wygaśnięcia nie są wyświetlane.</p>
+<h3 id="administrator">Administrator</h3>
+<ol>
+<li>Wejdź na <code>/admin/logowanie</code> i zaloguj się.</li>
+<li>Kliknij <strong>Dodaj ogłoszenie</strong> i wypełnij formularz:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Pole</th>
+<th>Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tytuł</td>
+<td>od 3 do 120 znaków</td>
+</tr>
+<tr>
+<td>Treść</td>
+<td>do 2000 znaków, zwykły tekst</td>
+</tr>
+<tr>
+<td>Której klasy dotyczy</td>
+<td>jedna z klas albo „Cała szkoła”</td>
+</tr>
+<tr>
+<td>Termin</td>
+<td>opcjonalnie; od niego zależy przycisk kalendarza</td>
+</tr>
+<tr>
+<td>Wygasa</td>
+<td>opcjonalnie; puste oznacza, że ogłoszenie nie wygasa. Nie może być wcześniejsze niż termin</td>
+</tr>
+<tr>
+<td>Przypnij na górze</td>
+<td>ogłoszenie zostaje na początku listy</td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
+<li>Zmieniasz ogłoszenie przyciskiem <strong>Edytuj</strong>, przypinasz lub odpinasz przyciskiem <strong>Przypnij</strong> i usuwasz przyciskiem <strong>Usuń</strong>.</li>
+<li>Na dole panelu dodajesz klasy. Klasy, do których przypisano ogłoszenia, nie da się usunąć.</li>
+<li>Na końcu użyj przycisku <strong>Wyloguj</strong>. Sesja jest odświeżana automatycznie, więc na cudzym komputerze wylogowanie jest konieczne.</li>
+</ol>
+<p>Błędy w formularzu są opisane po polsku, a wpisane dane zostają w polach.</p>
+<p>Administratorem jest konto, które znajduje się na liście administratorów w bazie. Samo założenie konta nie daje dostępu do panelu, a aplikacja nie ma żadnej funkcji nadawania uprawnień. Nowego administratora dodaje właściciel projektu bezpośrednio w bazie danych.</p>
+<h2 id="4-jak-to-jest-zbudowane">4. Jak to jest zbudowane</h2>
+<pre><code> Telefon / przeglądarka (PWA)
+            │  HTTPS
+            ▼
+ Vercel: aplikacja Next.js (strony, akcje serwerowe)
+            │
+            ▼
+ Supabase: logowanie (Auth) + baza PostgreSQL z regułami dostępu (RLS)
+</code></pre>
+<p>Strona publiczna czyta dane bez logowania, ale baza zwraca tylko ogłoszenia, które nie wygasły. Panel zapisuje dane w imieniu zalogowanego administratora, więc te same reguły w bazie obowiązują także przy zapisie.</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Rozwiązanie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aplikacja</td>
+<td>Next.js 16 (App Router), React 19, TypeScript</td>
+</tr>
+<tr>
+<td>Wygląd</td>
+<td>Tailwind CSS, interfejs w całości po polsku</td>
+</tr>
+<tr>
+<td>Logowanie i dane</td>
+<td>Supabase: Auth i PostgreSQL z Row Level Security</td>
+</tr>
+<tr>
+<td>Hosting</td>
+<td>Vercel</td>
+</tr>
+<tr>
+<td>Instalacja</td>
+<td>PWA: manifest, ikony PNG, service worker z ekranem offline</td>
+</tr>
+<tr>
+<td>Walidacja</td>
+<td>zod, komunikaty po polsku</td>
+</tr>
+<tr>
+<td>Testy</td>
+<td>Vitest, Playwright, testy na prawdziwej bazie</td>
+</tr>
+</tbody>
+</table>
+<h3 id="model-danych">Model danych</h3>
+<p>Baza ma trzy tabele.</p>
+<table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Zawartość</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>classes</code></td>
+<td>nazwy klas (unikalne, bez względu na wielkość liter)</td>
+</tr>
+<tr>
+<td><code>announcements</code></td>
+<td>tytuł, treść, klasa (puste = cała szkoła), przypięcie, termin, data wygaśnięcia, daty utworzenia i zmiany</td>
+</tr>
+<tr>
+<td><code>admins</code></td>
+<td>identyfikatory kont, które mają dostęp do panelu</td>
+</tr>
+</tbody>
+</table>
+<p>Dla listy publicznej założono indeksy po kolejności wyświetlania (przypięte, najnowsze), po dacie wygaśnięcia i po klasie. Lista pobiera dane stronami, jednym zapytaniem na stronę.</p>
+<h3 id="czas">Czas</h3>
+<p>Terminy są zapisywane w UTC, a wprowadzane i wyświetlane w czasie polskim (Europe/Warsaw), także w okolicach zmiany czasu. Plik kalendarza ma poprawną godzinę niezależnie od strefy telefonu.</p>
+<h2 id="5-bezpieczenstwo">5. Bezpieczeństwo</h2>
+<p>Dane w tej aplikacji nie są poufne, ale panel zmienia to, co widzą wszyscy, więc zabezpieczono go starannie.</p>
+<table>
+<thead>
+<tr>
+<th>Zagrożenie</th>
+<th>Zabezpieczenie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ktoś zapisuje dane bez uprawnień</td>
+<td>Reguły w bazie (RLS): zapis tylko dla administratora z tabeli <code>admins</code>. Sprawdzone testami na prawdziwej bazie, także dla zwykłego zalogowanego użytkownika</td>
+</tr>
+<tr>
+<td>Ktoś nadaje sobie rolę administratora</td>
+<td>Rola pochodzi wyłącznie z tabeli w bazie, nie z przeglądarki. Tabeli nie da się zmienić przez API</td>
+</tr>
+<tr>
+<td>Wejście do panelu bez logowania</td>
+<td>Sesję sprawdza serwer przy każdej stronie i każdej akcji, a nie tylko ukryte przyciski</td>
+</tr>
+<tr>
+<td>Zgadywanie haseł</td>
+<td>Limit 5 nieudanych prób na 15 minut oraz wbudowane limity logowania w Supabase. Błąd nie zdradza, czy konto istnieje</td>
+</tr>
+<tr>
+<td>Wyciek klucza administracyjnego</td>
+<td>Aplikacja używa tylko klucza publicznego. Klucz z pełnym dostępem nie występuje w kodzie aplikacji ani w plikach wysyłanych do przeglądarki</td>
+</tr>
+<tr>
+<td>Złośliwa treść ogłoszenia</td>
+<td>Treść to zwykły tekst, wyświetlany z ucieczką znaków. Aplikacja nie wstawia kodu HTML</td>
+</tr>
+<tr>
+<td>Ukryte dane wygasłych ogłoszeń</td>
+<td>Baza nie zwraca ich osobom niezalogowanym, także przy bezpośrednim zapytaniu do API</td>
+</tr>
+<tr>
+<td>Konto testowe w produkcji</td>
+<td>Konto istnieje tylko w bazie deweloperskiej. Aplikacja produkcyjna odrzuca takie logowanie, a przed wdrożeniem skrypty sprawdzają konfigurację i bazę</td>
+</tr>
+</tbody>
+</table>
+<p>Panel i jego odpowiedzi mają nagłówek zakazujący indeksowania przez wyszukiwarki. Strony wysyłają też standardowe nagłówki bezpieczeństwa.</p>
+<h2 id="6-srodowiska-i-wdrozenie">6. Środowiska i wdrożenie</h2>
+<p>Projekt działa w trzech środowiskach z osobnymi bazami danych:</p>
+<table>
+<thead>
+<tr>
+<th>Środowisko</th>
+<th>Gałąź</th>
+<th>Hosting</th>
+<th>Baza</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lokalne</td>
+<td>dowolna</td>
+<td>komputer programisty</td>
+<td>lokalny Supabase w Dockerze</td>
+</tr>
+<tr>
+<td>Testowe</td>
+<td><code>develop</code></td>
+<td>Vercel Preview (chronione logowaniem Vercel)</td>
+<td>osobny projekt Supabase</td>
+</tr>
+<tr>
+<td>Produkcyjne</td>
+<td><code>main</code></td>
+<td>Vercel Production</td>
+<td>osobny projekt Supabase</td>
+</tr>
+</tbody>
+</table>
+<p>Środowisko testowe nigdy nie łączy się z bazą produkcyjną. Dane demonstracyjne i konto testowe powstają tylko w środowisku deweloperskim. Gałąź <code>main</code> jest przygotowywana osobnym skryptem, który usuwa wszystko, co deweloperskie, a przed wdrożeniem uruchamiane są kontrole: czy konfiguracja produkcyjna nie zawiera ustawień testowych, czy w repozytorium nie ma danych demonstracyjnych i czy produkcyjna baza nie zawiera konta testowego.</p>
+<p>Budowa na darmowych planach Vercel i Supabase jest zamierzona. Aplikacja nie używa zadań w tle ani połączeń w czasie rzeczywistym, nie przechowuje obrazów i pobiera dane stronami, więc zużycie zasobów jest niewielkie. Darmowy plan Supabase usypia projekt po tygodniu bez ruchu i nie tworzy kopii zapasowych do odtworzenia, dlatego ważne dane warto okresowo eksportować.</p>
+<h2 id="7-testy">7. Testy</h2>
+<p>Testy uruchamia się poleceniami <code>npm test</code>, <code>npm run test:rls</code>, <code>npm run test:e2e</code>, <code>npm run test:install</code> i <code>npm run test:prod</code>. Poniżej wynik ostatnich przebiegów (listopad 2026).</p>
+<table>
+<thead>
+<tr>
+<th>Rodzaj testów</th>
+<th>Liczba</th>
+<th>Co sprawdzają</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jednostkowe</td>
+<td>18</td>
+<td>wygasanie, plik kalendarza, walidacja, czas polski, reguły produkcji</td>
+</tr>
+<tr>
+<td>Autoryzacja na prawdziwej bazie</td>
+<td>18</td>
+<td>kto może czytać i zapisywać dane, ograniczenia bazy</td>
+</tr>
+<tr>
+<td>Przeglądarkowe (Playwright)</td>
+<td>32</td>
+<td>przebiegi administratora i odwiedzającego, telefon, tablet i komputer, dostępność, tryb offline</td>
+</tr>
+<tr>
+<td>Strona instalacji</td>
+<td>14</td>
+<td>instrukcje dla iPhone'a i Androida, kod QR odczytany niezależną biblioteką, ikony</td>
+</tr>
+<tr>
+<td>Wersja produkcyjna</td>
+<td>3</td>
+<td>odrzucenie konta testowego, brak tras testowych</td>
+</tr>
+<tr>
+<td>Kontrole konfiguracji</td>
+<td>6</td>
+<td>wykrywanie ustawień zabronionych w produkcji</td>
+</tr>
+</tbody>
+</table>
+<p>Testy dostępności (axe, poziom WCAG A i AA) nie wykazały poważnych naruszeń. Przyciski i odnośniki mają co najmniej 44 piksele wysokości.</p>
+<h2 id="8-ograniczenia-i-dalszy-rozwoj">8. Ograniczenia i dalszy rozwój</h2>
+<p>Aplikacja jest celowo mała. Jej obecne ograniczenia:</p>
+<ul>
+<li>Jest jedna rola, administrator. Nie ma kont uczniów, rodziców ani nauczycieli.</li>
+<li>Treść ogłoszeń nie ma formatowania, a ogłoszenia nie mają zdjęć ani załączników.</li>
+<li>Nie ma powiadomień push ani e-mail. Użytkownik dowiaduje się o nowym ogłoszeniu po wejściu do aplikacji.</li>
+<li>Nowego administratora dodaje się ręcznie w bazie, bo panel nie ma zarządzania użytkownikami.</li>
+<li>Limit prób logowania w aplikacji działa osobno na każdej instancji serwera. Główną ochroną jest limit wbudowany w Supabase.</li>
+<li>Skrócenie sesji administratora do kilku godzin wymaga płatnego planu Supabase.</li>
+<li>Instalację na telefonach sprawdzono w symulacji przeglądarki. Test na prawdziwym Androidzie i iPhonie jest jeszcze do wykonania.</li>
+</ul>
+<p>Najbardziej naturalne kolejne kroki to powiadomienia push (przydatne zwłaszcza na Androidzie), więcej niż jedno konto administratora z zarządzaniem w panelu oraz zdjęcia w ogłoszeniach. Wszystkie dałyby się dodać bez zmiany obecnej struktury.</p>
+<div class="get"><a href="dokumentacja.docx">Pobierz dokumentację (Word)</a><a href="https://github.com/mat-jan/school-announcements">Repozytorium</a></div>
+</main>
+</div>
+<footer><div>SchoolPulse · dokumentacja projektu · listopad 2026</div></footer>
+</body>
+</html>
