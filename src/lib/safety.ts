@@ -1,8 +1,9 @@
 /** Reguły bezpieczeństwa produkcji. Używane przez akcję logowania i (lustrzanie) przez scripts/check-prod-safety.mjs. */
 export const DEV_EMAIL_SUFFIX = "@example.test";
 export const isDevEmail = (email: string) => email.trim().toLowerCase().endsWith(DEV_EMAIL_SUFFIX);
+/** Na Vercelu decyduje VERCEL_ENV (Preview ma NODE_ENV=production, ale NIE jest produkcją); poza Vercelem – APP_ENV, a bez niego NODE_ENV. */
 export const isProduction = (env: Record<string, string | undefined> = process.env) =>
-  env.NODE_ENV === "production" || env.APP_ENV === "production" || env.VERCEL_ENV === "production";
+  env.VERCEL_ENV ? env.VERCEL_ENV === "production" : env.APP_ENV ? env.APP_ENV === "production" : env.NODE_ENV === "production";
 /** Czy aplikacja ma odrzucić to logowanie jeszcze przed zapytaniem do Supabase (konto deweloperskie w produkcji). */
 export const rejectDevLogin = (email: string, env: Record<string, string | undefined> = process.env) => isProduction(env) && isDevEmail(email);
 

@@ -10,6 +10,10 @@ describe("odrzucanie kont deweloperskich w produkcji", () => {
     expect(rejectDevLogin("admin@example.test", { NODE_ENV: "development" })).toBe(false);
     expect(rejectDevLogin("dyrektor@szkola.pl", { NODE_ENV: "production" })).toBe(false);
   });
+  it("Vercel Preview (NODE_ENV=production, VERCEL_ENV=preview) NIE jest produkcją, a VERCEL_ENV=production wygrywa z APP_ENV=development", () => {
+    expect(isProduction({ NODE_ENV: "production", VERCEL_ENV: "preview" })).toBe(false); expect(rejectDevLogin("admin@example.test", { NODE_ENV: "production", VERCEL_ENV: "preview" })).toBe(false);
+    expect(isProduction({ VERCEL_ENV: "production", APP_ENV: "development" })).toBe(true);
+  });
   it("rozpoznaje produkcję", () => { expect(isProduction({ VERCEL_ENV: "production" })).toBe(true); expect(isProduction({ VERCEL_ENV: "preview" })).toBe(false); expect(isDevEmail("a@szkola.pl")).toBe(false); });
 });
 

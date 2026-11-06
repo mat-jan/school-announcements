@@ -6,7 +6,7 @@ import { join } from "node:path";
 
 export function violations(env) {
   const v = [];
-  const prod = env.NODE_ENV === "production" || env.APP_ENV === "production" || env.VERCEL_ENV === "production";
+  const prod = env.VERCEL_ENV ? env.VERCEL_ENV === "production" : env.APP_ENV ? env.APP_ENV === "production" : env.NODE_ENV === "production"; // Vercel Preview ma NODE_ENV=production, ale nie jest produkcją
   if (!prod) return v;
   if (["1", "true"].includes(env.DEBUG) || env.NEXT_PUBLIC_DEBUG === "true") v.push("Debug mode enabled in production");
   if (env.DEV_ADMIN_EMAIL || env.DEV_ADMIN_PASSWORD) v.push("Development credentials present in production environment");
